@@ -56,7 +56,6 @@ function cb(err, response, body) {
 
 }
 
-
 function getWeather(city) {
     result = undefined;
     var URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=8bd6abdc20db1f463412a5c9df7dc7d7&units=metric`;
