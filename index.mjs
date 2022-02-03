@@ -24,12 +24,12 @@ app.post("/webhook", (req, res) => {
   const agent = new dfff.WebhookClient({ request: req, response: res });
 
   function welcome(agent) {
-    agent.add("Sending Response from a Webhook Server to Dialogflow");
+    agent.add("Greetings! from a Webhook Server to Dialogflow");
   }
 
   var intentMap = new Map();
 
-  intentMap.set("Default Welcome Intent", welcome);
+  intentMap.set("webhookDemo", welcome);
 
   agent.handleRequest(intentMap);
 });
