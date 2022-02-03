@@ -1,6 +1,7 @@
-import express from "express";
+import express, { request } from "express";
 import cors from "cors";
 import morgan from "morgan";
+import request from "request";
 const app = express();
 const port = process.env.PORT || 3000
 
@@ -40,22 +41,31 @@ app.post('/webhook', (req, res) => {
     return res.json(responseObj);
 });
 
+function cb(err, response, body) {
+
+    if(err) {
+        console.log('error:', error);
+    }
+
+    var weather = JSON.parse(body);
+    if(weather.message === 'city not found') {
+        result = 'unable to get weather' + weather.message;
+    } else {
+        result = 'Right now its ' + weather.main.temp + ' degrees with ' + weather.weather[0].description;
+    }
+
+}
+
 
 function getWeather(city) {
-    let URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=8bd6abdc20db1f463412a5c9df7dc7d7&units=metric`;
-    var request = require('request');
-    request(URL, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var info = JSON.parse(body);
-            console.log(info);
-            var weather = info.weather[0].main;
-            var temp = info.main.temp;
-            var humidity = info.main.humidity;
-            var wind = info.wind.speed;
-            var response = `The weather in ${city} is ${weather} and the temperature is ${temp} degrees celsius. The humidity is ${humidity}% and the wind speed is ${wind} km/h.`;
-            return response;
-        }
-    });
+    result = undefined;
+    var URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=8bd6abdc20db1f463412a5c9df7dc7d7&units=metric`;
+    console.log(URL);
+    var req = request(URL, cb);
+    while(result === undefined) {
+        require('deasync').runLoopOnce();
+    }
+    return result;
 }
 
 app.listen(port, () => {
