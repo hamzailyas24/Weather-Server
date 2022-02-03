@@ -1,7 +1,6 @@
 import express, { request } from "express";
 import cors from "cors";
 import morgan from "morgan";
-import request from "request";
 const app = express();
 const port = process.env.PORT || 3000
 
